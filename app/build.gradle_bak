@@ -1,0 +1,119 @@
+/*
+ * Copyright (C) 2016 Baidu, Inc. All Rights Reserved.
+ */
+apply plugin: 'com.android.model.application'
+model {
+    repositories {
+
+        libs(PrebuiltLibraries) {
+            libc {
+                headers.srcDir "/Users/baidu/Documents/DeepInAndroid/2/binder_lib/include/libc"
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("/Users/baidu/Documents/DeepInAndroid/2/binder_lib/libs/libc.so")
+                }
+            }
+            binderlib {
+                headers.srcDir "/Users/baidu/Documents/DeepInAndroid/2/binder_lib/include"
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("/Users/baidu/Documents/DeepInAndroid/2/binder_lib/libs/libbinder.so")
+                }
+            }
+            libcutils {
+                headers.srcDir "/Volumes/WIN/android5/system/core/include"
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("/Users/baidu/Documents/DeepInAndroid/2/binder_lib/libs/libcutils.so")
+                }
+            }
+            libutils {
+                headers.srcDir "/Volumes/WIN/android5/system/core/include"
+                binaries.withType(SharedLibraryBinary) {
+                    sharedLibraryFile = file("/Users/baidu/Documents/DeepInAndroid/2/binder_lib/libs/libutils.so")
+                }
+            }
+        }
+    }
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.2"
+
+        defaultConfig {
+            applicationId "dodola.binder"
+            minSdkVersion.apiLevel 15
+            targetSdkVersion.apiLevel 22
+            versionCode 1
+            versionName "1.0"
+
+            buildConfigFields {
+                create() {
+                    type "int"
+                    name "VALUE"
+                    value "1"
+                }
+            }
+        }
+    }
+
+
+    android.ndk {
+        moduleName = "binder_ndk"
+        cppFlags.addAll(["-Werror", "-fno-rtti", "-fno-exceptions"/*, "-std=c++11"*/])
+        CFlags.addAll(["-Werror"])
+        ldLibs.addAll(['android', 'log'])
+//        stl = "gnustl_static"
+        debuggable = true
+
+    }
+    android.buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles.add(file('proguard-rules.txt'))
+        }
+    }
+    android.sources {
+        main {
+            jni {
+                dependencies {
+//                    library "libc" linkage "shared"
+                    library "binderlib" linkage "shared" buildType "debug"
+                    library "libcutils" linkage "shared" buildType "debug"
+                    library "libutils" linkage "shared" buildType "debug"
+
+                }
+            }
+        }
+    }
+    android.productFlavors {
+        // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+        // https://developer.android.com/ndk/guides/abis.html#sa
+        create("arm") {
+            ndk.abiFilters.add("armeabi")
+        }
+//        create("arm7") {
+//            ndk.abiFilters.add("armeabi-v7a")
+//        }
+//        create("arm8") {
+//            ndk.abiFilters.add("arm64-v8a")
+//        }
+//        create("x86") {
+//            ndk.abiFilters.add("x86")
+//        }
+//        create("x86-64") {
+//            ndk.abiFilters.add("x86_64")
+//        }
+//        create("mips") {
+//            ndk.abiFilters.add("mips")
+//        }
+//        create("mips-64") {
+//            ndk.abiFilters.add("mips64")
+//        }
+        // To include all cpu architectures, leaves abiFilters empty
+        create("all")
+    }
+}
+
+dependencies {
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+}
