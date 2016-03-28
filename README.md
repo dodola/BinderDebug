@@ -68,7 +68,7 @@ Android Studio 1.4以后就支持NDK编译了,详细的Gradle配置可以去看[
 
 除此之外还需要这些库的头文件,目录树如下:
 
-
+```bash
 .
 ├── binder ----> libbinder.so 
 ├── core ---->别的头文件里有引用此头文件
@@ -105,7 +105,7 @@ Android Studio 1.4以后就支持NDK编译了,详细的Gradle配置可以去看[
 ├── system
 └── utils ---->libutils.so
 
-
+```
 下面贴出gradle配置文件里系统库的配置
 
 
@@ -317,9 +317,11 @@ emulator: WARNING: system partition size adjusted to match image file (550 MB > 
 
 
 2. 在弹出的对话框里选择`Native`选项
+3. 
 ![enter description here][12]
 
 3. 点击ok以后,debug的控制台会输出LLDB的调用命令
+4. 
 ![enter description here][13]
 
 
